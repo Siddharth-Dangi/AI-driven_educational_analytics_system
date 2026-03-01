@@ -1,0 +1,722 @@
+% ============================================================================
+%  AI-Driven Educational Analytics System — Technical Report
+%  Intelligent Exam Question Difficulty Prediction using
+%  Feature Engineering & Logistic Regression
+% ============================================================================
+
+\documentclass[12pt, a4paper]{article}
+
+% --- Packages ---------------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{amsmath, amssymb}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{parskip}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, fit, backgrounds}
+
+% --- Colour Palette ---------------------------------------------------------
+\definecolor{primary}{HTML}{334155}
+\definecolor{accent}{HTML}{2563EB}
+\definecolor{muted}{HTML}{94A3B8}
+\definecolor{codebg}{HTML}{F1F5F9}
+\definecolor{linkblue}{HTML}{3B82F6}
+
+% --- Hyperref Setup ---------------------------------------------------------
+\hypersetup{
+    colorlinks  = true,
+    linkcolor   = primary,
+    urlcolor    = linkblue,
+    citecolor   = accent,
+    pdftitle    = {AI-Driven Educational Analytics System — Technical Report},
+    pdfauthor   = {Siddharth Dangi},
+}
+
+% --- Header / Footer --------------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{muted}{AI-Driven Educational Analytics System}}
+\fancyhead[R]{\small\textcolor{muted}{Technical Report}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- Section Styling --------------------------------------------------------
+\titleformat{\section}
+  {\Large\bfseries\color{primary}}{\thesection}{1em}{}[\vspace{-0.5em}\textcolor{muted}{\rule{\textwidth}{0.4pt}}]
+\titleformat{\subsection}
+  {\large\bfseries\color{primary}}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{primary}}{\thesubsubsection}{1em}{}
+
+% --- Code Listing Style -----------------------------------------------------
+\lstdefinestyle{pythonstyle}{
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{accent}\bfseries,
+    commentstyle=\color{muted}\itshape,
+    stringstyle=\color{primary},
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{muted},
+    numbers=left,
+    numberstyle=\tiny\color{muted},
+    xleftmargin=2em,
+    framexleftmargin=1.5em,
+}
+\lstset{style=pythonstyle}
+
+% ============================================================================
+%  DOCUMENT BEGIN
+% ============================================================================
+\begin{document}
+
+% --- Title Page -------------------------------------------------------------
+\begin{titlepage}
+\begin{center}
+    \vspace*{2cm}
+
+    {\Huge\bfseries\textcolor{primary}{AI-Driven Educational\\[0.3cm] Analytics System}}\\[0.6cm]
+    {\Large\textcolor{muted}{Intelligent Exam Question Difficulty Prediction\\via Feature Engineering \& Logistic Regression}}
+
+    \vspace{1.5cm}
+
+    \textcolor{muted}{\rule{0.6\textwidth}{0.4pt}}
+
+    \vspace{1.5cm}
+
+    {\large
+    \textbf{Authors:}\\[0.3cm]
+    Siddharth Dangi\\[0.15cm]
+    \vspace{0.5cm}
+    \textbf{Date:} March 2026\\[0.3cm]
+    \textbf{Version:} 1.0
+    }
+
+    \vspace{2cm}
+
+    \begin{tikzpicture}
+        \node[draw=primary, rounded corners=8pt, line width=1.5pt,
+              inner sep=16pt, text width=0.7\textwidth, align=center,
+              fill=codebg] {
+            \textbf{Abstract}\\[6pt]
+            \small
+            This report presents an end-to-end machine-learning system that
+            automatically predicts the difficulty level of examination questions.
+            The system combines TF-IDF text vectorisation with numerical
+            student performance features (average score, correct rate, score
+            variance) and employs a Logistic Regression classifier within a
+            scikit-learn pipeline. The model achieves \textbf{98.9\% accuracy}
+            on a 5{,}000-question dataset with balanced class distribution.
+            A Streamlit web application is provided for real-time batch and
+            single-question difficulty analysis.
+        };
+    \end{tikzpicture}
+
+    \vfill
+    {\small\textcolor{muted}{GenAI Project — Machine Learning Pipeline \& Streamlit Application}}
+\end{center}
+\end{titlepage}
+
+% --- Table of Contents ------------------------------------------------------
+\tableofcontents
+\newpage
+
+% ============================================================================
+%  1. INTRODUCTION
+% ============================================================================
+\section{Introduction}\label{sec:intro}
+
+\subsection{Motivation}
+Educators, instructional designers, and testing organisations invest considerable manual effort in evaluating the difficulty and quality of examination questions. A misjudged question can skew test results and inaccurately measure student proficiency. Automating this ``first-pass'' quality assurance can accelerate exam development cycles and improve assessment reliability.
+
+\subsection{Objective}
+The \textbf{AI-Driven Educational Analytics System} is an end-to-end, production-structured machine-learning pipeline that:
+\begin{enumerate}[leftmargin=2em]
+    \item Takes raw question text and associated student performance metrics as input.
+    \item Applies \textbf{TF-IDF vectorisation} to extract 3{,}000 text features from the question text.
+    \item Combines text features with \textbf{3 numerical features} (average score, correct rate, score variance) using a \texttt{ColumnTransformer}.
+    \item Classifies each question into a categorical \textbf{difficulty tier}: Easy, Medium, or Hard.
+    \item Exposes predictions through an interactive \textbf{Streamlit web application} with rich visualisations.
+\end{enumerate}
+
+\subsection{Scope}
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Domain:} Multi-subject English-language examination questions spanning Chemistry, Biology, Data Structures, Genetics, and more.
+    \item \textbf{Dataset:} 5{,}000 exam questions with associated metadata and student performance statistics.
+    \item \textbf{Model:} Logistic Regression within a scikit-learn pipeline.
+    \item \textbf{Deployment:} Local Streamlit application with a serialised model artefact (\texttt{model.pkl}).
+\end{itemize}
+
+% ============================================================================
+%  2. DATASET
+% ============================================================================
+\section{Dataset}\label{sec:dataset}
+
+\subsection{Source \& Scale}
+The dataset comprises \textbf{5{,}000 examination questions} stored in \texttt{data/5000\_dataset\_genai.csv}. Each record contains:
+\begin{itemize}[leftmargin=2em]
+    \item \texttt{question\_id} — Unique identifier for each question
+    \item \texttt{question\_text} — Full text of the examination question
+    \item \texttt{topic} — Subject area (e.g., Chemistry, Biology, Data Structures, Genetics)
+    \item \texttt{average\_score} — Mean student score on a 0–10 scale
+    \item \texttt{correct\_rate} — Proportion of students answering correctly (0–1)
+    \item \texttt{score\_variance} — Variance in student scores
+    \item \texttt{difficulty\_label} — Ground truth label: Easy, Medium, or Hard
+\end{itemize}
+
+\subsection{Dataset Schema}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{l l X}
+    \toprule
+    \textbf{Column} & \textbf{Type} & \textbf{Description} \\
+    \midrule
+    \texttt{question\_id}       & Integer & Unique question identifier \\
+    \texttt{question\_text}     & String  & Full text of the exam question \\
+    \texttt{topic}              & String  & Subject/topic category \\
+    \texttt{average\_score}     & Float   & Mean student score (0--10) \\
+    \texttt{correct\_rate}      & Float   & Correct response proportion (0--1) \\
+    \texttt{score\_variance}    & Float   & Variance in student scores \\
+    \texttt{difficulty\_label}  & String  & Target variable: Easy / Medium / Hard \\
+    \bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Class Distribution}
+The dataset exhibits a \textbf{balanced} class distribution, which is advantageous for classifier training:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lrr}
+    \toprule
+    \textbf{Class} & \textbf{Count} & \textbf{Proportion} \\
+    \midrule
+    Easy   & $\sim$1{,}667 & $\sim$33.3\% \\
+    Medium & $\sim$1{,}667 & $\sim$33.3\% \\
+    Hard   & $\sim$1{,}666 & $\sim$33.3\% \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The balanced distribution eliminates the need for resampling techniques (e.g., SMOTE) or class weighting.
+
+\subsection{Sample Records}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\small
+\begin{tabularx}{\textwidth}{l X c c c c}
+    \toprule
+    \textbf{ID} & \textbf{Question Text} & \textbf{Topic} & \textbf{Avg Score} & \textbf{Correct Rate} & \textbf{Label} \\
+    \midrule
+    1 & Explain the data normalization in Chemistry\ldots & Chemistry & 8.09 & 0.825 & Easy \\
+    2 & Compute the key assumption in Data Structures\ldots & Data Structures & 4.00 & 0.604 & Medium \\
+    3 & Analyze the logical equivalence in Biology\ldots & Biology & 1.11 & 0.117 & Hard \\
+    \bottomrule
+\end{tabularx}
+\end{center}
+
+% ============================================================================
+%  3. FEATURE ENGINEERING
+% ============================================================================
+\section{Feature Engineering}\label{sec:features}
+
+The model uses a \texttt{ColumnTransformer} to combine two distinct feature extraction pipelines:
+
+\subsection{Text Features — TF-IDF Vectorisation}
+The \texttt{question\_text} column is processed by a \texttt{TfidfVectorizer} with the following configuration:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{ll}
+    \toprule
+    \textbf{Parameter} & \textbf{Value} \\
+    \midrule
+    \texttt{max\_features}   & 3{,}000 \\
+    Analyser                  & Word-level (default) \\
+    Sublinear TF              & False (default) \\
+    Norm                      & L2 (default) \\
+    Stop words                & None (default) \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\noindent TF-IDF (Term Frequency--Inverse Document Frequency) captures the relative importance of words in each question relative to the entire corpus. The resulting feature matrix has dimensions $n \times 3{,}000$.
+
+\subsubsection{TF-IDF Formula}
+\begin{equation}
+    \text{tfidf}(t, d) = \text{tf}(t, d) \times \log\left(\frac{N}{\text{df}(t)}\right)
+\end{equation}
+
+\noindent Where $t$ = term, $d$ = document, $N$ = total documents, $\text{df}(t)$ = number of documents containing $t$.
+
+\subsection{Numerical Features — Standard Scaling}
+Three numerical features are normalised using \texttt{StandardScaler}:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{ll}
+    \toprule
+    \textbf{Feature} & \textbf{Description} \\
+    \midrule
+    \texttt{average\_score}   & Mean student score (0--10) \\
+    \texttt{correct\_rate}    & Proportion of correct responses (0--1) \\
+    \texttt{score\_variance}  & Variance in student scores \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection{Standard Scaling Formula}
+\begin{equation}
+    z = \frac{x - \mu}{\sigma}
+\end{equation}
+
+\noindent Where $\mu$ = feature mean, $\sigma$ = feature standard deviation (computed on training data).
+
+\subsection{Feature Fusion}
+The \texttt{ColumnTransformer} horizontally concatenates the TF-IDF matrix ($n \times 3{,}000$) with the scaled numerical matrix ($n \times 3$), producing a final feature matrix of dimensions $n \times 3{,}003$.
+
+\begin{center}
+\begin{tikzpicture}[
+    node distance=0.8cm and 2.5cm,
+    every node/.style={font=\small},
+    block/.style={rectangle, draw=primary, rounded corners=4pt, fill=codebg,
+                  text width=3.5cm, minimum height=0.9cm, align=center,
+                  line width=0.8pt},
+    arrow/.style={-{Stealth[length=6pt]}, line width=0.8pt, color=primary}
+]
+
+\node[block] (text) {\texttt{question\_text}\\{\scriptsize String column}};
+\node[block, below=of text] (nums) {Numerical Columns\\{\scriptsize 3 features}};
+
+\node[block, right=of text] (tfidf) {TF-IDF Vectorizer\\{\scriptsize 3{,}000 features}};
+\node[block, right=of nums] (scaler) {Standard Scaler\\{\scriptsize 3 features}};
+
+\node[block, right=3cm of $(tfidf)!0.5!(scaler)$] (concat) {Column\\Transformer\\{\scriptsize 3{,}003 features}};
+
+\node[block, right=of concat] (clf) {Logistic\\Regression};
+
+\draw[arrow] (text) -- (tfidf);
+\draw[arrow] (nums) -- (scaler);
+\draw[arrow] (tfidf) -- (concat);
+\draw[arrow] (scaler) -- (concat);
+\draw[arrow] (concat) -- (clf);
+
+\end{tikzpicture}
+\end{center}
+
+% ============================================================================
+%  4. MODEL ARCHITECTURE
+% ============================================================================
+\section{Model Architecture}\label{sec:models}
+
+\subsection{Pipeline Overview}
+The entire model is encapsulated in a single \textbf{scikit-learn \texttt{Pipeline}} object, ensuring that preprocessing and classification are applied consistently during both training and inference:
+
+\begin{lstlisting}[language=Python, caption={Model Pipeline Definition}]
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+
+preprocessor = ColumnTransformer(transformers=[
+    ("text", TfidfVectorizer(max_features=3000), "question_text"),
+    ("num", StandardScaler(),
+     ["average_score", "correct_rate", "score_variance"])
+])
+
+model = Pipeline([
+    ("preprocessing", preprocessor),
+    ("classifier", LogisticRegression(max_iter=1000))
+])
+\end{lstlisting}
+
+\subsection{Classifier --- Logistic Regression}
+Logistic Regression was chosen for its:
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Interpretability:} Linear decision boundaries are easy to understand.
+    \item \textbf{Efficiency:} Fast training even with 3{,}003 features.
+    \item \textbf{Probabilistic output:} Produces calibrated class probabilities via the softmax function.
+    \item \textbf{Low risk of overfitting:} Implicit L2 regularisation.
+\end{itemize}
+
+\subsubsection{Multi-Class Strategy}
+The classifier uses the \textbf{One-vs-Rest (OvR)} strategy by default. For each class $c \in \{$Easy, Medium, Hard$\}$, a binary logistic model is trained:
+
+\begin{equation}
+    P(y = c \mid \mathbf{x}) = \frac{1}{1 + e^{-(\mathbf{w}_c^\top \mathbf{x} + b_c)}}
+\end{equation}
+
+\noindent The predicted class is the one with the highest probability.
+
+\subsection{Hyperparameters}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{ll}
+    \toprule
+    \textbf{Parameter} & \textbf{Value} \\
+    \midrule
+    \texttt{max\_iter}       & 1{,}000 \\
+    \texttt{penalty}         & L2 (default) \\
+    \texttt{C}               & 1.0 (default) \\
+    \texttt{solver}          & lbfgs (default) \\
+    \texttt{multi\_class}    & auto (OvR) \\
+    \texttt{random\_state}   & Not set (deterministic via data split) \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+% ============================================================================
+%  5. TRAINING & EVALUATION
+% ============================================================================
+\section{Training \& Evaluation}\label{sec:training}
+
+\subsection{Data Split}
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Train:} 80\% of the dataset (4{,}000 samples)
+    \item \textbf{Test:} 20\% of the dataset (1{,}000 samples)
+    \item \textbf{Stratification:} Stratified split on \texttt{difficulty\_label} to preserve class proportions.
+    \item \textbf{Random Seed:} \texttt{random\_state=42} for reproducibility.
+\end{itemize}
+
+\subsection{Training Process}
+The \texttt{Pipeline.fit()} method processes the data sequentially:
+\begin{enumerate}[leftmargin=2em]
+    \item \texttt{ColumnTransformer} fits the TF-IDF vocabulary and scaler statistics on training data.
+    \item The fused feature matrix is passed to \texttt{LogisticRegression.fit()}.
+    \item The trained pipeline is serialised via \texttt{joblib.dump()} as \texttt{model.pkl}.
+\end{enumerate}
+
+\subsection{Evaluation Metrics}
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Accuracy:} $\frac{\text{correct predictions}}{\text{total predictions}}$
+    \item \textbf{Precision} (weighted): $\sum_{c} \frac{|c|}{N} \cdot \frac{\text{TP}_c}{\text{TP}_c + \text{FP}_c}$
+    \item \textbf{Recall} (weighted): $\sum_{c} \frac{|c|}{N} \cdot \frac{\text{TP}_c}{\text{TP}_c + \text{FN}_c}$
+    \item \textbf{F1-Score} (weighted): Harmonic mean of precision and recall
+    \item Per-class precision/recall via \texttt{classification\_report}
+    \item Confusion matrix visualisation
+    \item ROC curves and Precision-Recall curves (One-vs-Rest)
+    \item 5-Fold Cross-Validation accuracy
+    \item Learning curve analysis
+\end{itemize}
+
+% ============================================================================
+%  6. RESULTS
+% ============================================================================
+\section{Results}\label{sec:results}
+
+\subsection{Overall Classification Performance}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{l c}
+    \toprule
+    \textbf{Metric} & \textbf{Score} \\
+    \midrule
+    Accuracy                & \textbf{98.90\%} \\
+    Precision (weighted)    & \textbf{98.90\%} \\
+    Recall (weighted)       & \textbf{98.90\%} \\
+    F1-Score (weighted)     & \textbf{98.90\%} \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Per-Class Performance}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{l cccc}
+    \toprule
+    \textbf{Class} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Support} \\
+    \midrule
+    Easy   & 0.99 & 1.00 & 0.99 & 334 \\
+    Medium & 0.99 & 0.98 & 0.98 & 333 \\
+    Hard   & 0.99 & 0.99 & 0.99 & 333 \\
+    \midrule
+    \textbf{Weighted Avg} & \textbf{0.99} & \textbf{0.99} & \textbf{0.99} & \textbf{1{,}000} \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Key Observations}
+
+\begin{enumerate}[leftmargin=2em]
+    \item \textbf{Near-perfect accuracy across all classes.} The balanced class distribution and strong feature signals (average score, correct rate) contribute to the model's impressive performance.
+
+    \item \textbf{Medium class has the lowest recall (98\%).} This is expected, as Medium questions occupy the boundary region between Easy and Hard, making them slightly harder to classify.
+
+    \item \textbf{TF-IDF adds marginal value over numerical features alone.} The three numerical features (average score, correct rate, score variance) are very strong predictors of difficulty. The TF-IDF features provide additional context from the question text.
+
+    \item \textbf{High model confidence.} The prediction confidence scores are generally above 90\%, indicating that the model is well-calibrated for this dataset.
+
+    \item \textbf{No class imbalance issues.} Unlike many real-world datasets where difficulty classes are skewed, this dataset's balanced distribution results in consistent performance across all classes.
+\end{enumerate}
+
+% ============================================================================
+%  7. VISUALIZATIONS
+% ============================================================================
+\section{Model Performance Visualisations}\label{sec:visualizations}
+
+The \texttt{notebook/visualizations.ipynb} notebook generates 14 detailed plots to evaluate the model:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabularx}{\textwidth}{c l X}
+    \toprule
+    \textbf{\#} & \textbf{Visualisation} & \textbf{Purpose} \\
+    \midrule
+    1  & Overall Metrics Bar Chart & Accuracy, Precision, Recall, F1 at a glance \\
+    2  & Confusion Matrix (Counts) & Raw classification results \\
+    3  & Confusion Matrix (Normalised) & Percentage-based view \\
+    4  & Per-Class Precision/Recall/F1 & Grouped bar comparison \\
+    5  & ROC Curves (One-vs-Rest) & AUC per class \\
+    6  & Precision-Recall Curves & Average precision per class \\
+    7  & Confidence Distribution & Overall confidence histogram \\
+    8  & Confidence by Predicted Class & Per-class confidence spread \\
+    9  & Correct vs Misclassified & Confidence correlation with correctness \\
+    10 & Class Distribution (Train/Test) & Verifies stratified split \\
+    11 & Feature Violin Plots & Score, correct rate, variance by difficulty \\
+    12 & Learning Curve & Data efficiency analysis \\
+    13 & 5-Fold Cross-Validation & Per-fold accuracy consistency \\
+    14 & Misclassification Analysis & Error pattern identification \\
+    \bottomrule
+\end{tabularx}
+\end{center}
+
+% ============================================================================
+%  8. SYSTEM ARCHITECTURE
+% ============================================================================
+\section{System Architecture}\label{sec:architecture}
+
+\subsection{High-Level Pipeline}
+
+\begin{center}
+\begin{tikzpicture}[
+    node distance=1.2cm and 2cm,
+    every node/.style={font=\small},
+    block/.style={rectangle, draw=primary, rounded corners=4pt, fill=codebg,
+                  text width=3.8cm, minimum height=1cm, align=center,
+                  line width=0.8pt},
+    arrow/.style={-{Stealth[length=6pt]}, line width=0.8pt, color=primary}
+]
+
+% Training Pipeline
+\node[block] (data) {Raw Data\\{\scriptsize\texttt{5000\_dataset\_genai.csv}}};
+\node[block, right=of data] (train) {Model Training\\{\scriptsize\texttt{train.ipynb}}};
+\node[block, right=of train] (save) {Serialisation\\{\scriptsize\texttt{model.pkl}}};
+
+% Inference Pipeline
+\node[block, below=1.5cm of data] (input) {User Input\\{\scriptsize Streamlit \texttt{app.py}}};
+\node[block, right=of input] (pipe) {Pipeline Inference\\{\scriptsize TF-IDF + Scaler + LR}};
+\node[block, right=of pipe] (out) {Results Dashboard\\{\scriptsize Metrics + Visualisations}};
+
+% Arrows
+\draw[arrow] (data) -- (train);
+\draw[arrow] (train) -- (save);
+\draw[arrow] (save) -- (pipe);
+\draw[arrow] (input) -- (pipe);
+\draw[arrow] (pipe) -- (out);
+
+% Labels
+\node[above=0.3cm of train, color=muted, font=\footnotesize\bfseries] {TRAINING PIPELINE};
+\node[above=0.3cm of pipe, color=muted, font=\footnotesize\bfseries] {INFERENCE PIPELINE};
+
+\end{tikzpicture}
+\end{center}
+
+\subsection{Repository Structure}
+\begin{lstlisting}[language={}, basicstyle=\ttfamily\footnotesize, frame=none, backgroundcolor=\color{codebg}]
+AI-driven_educational_analytics_system/
+  README.md                          # Project documentation
+  app.py                             # Streamlit web application
+  model.pkl                          # Serialised trained model
+  confusion_matrix.png               # Generated confusion matrix
+  data/
+    5000_dataset_genai.csv           # Dataset (5,000 questions)
+  notebook/
+    train.ipynb                      # Model training notebook
+    visualizations.ipynb             # 14 performance visualisations
+  report/
+    report.tex                       # LaTeX technical report (this file)
+\end{lstlisting}
+
+% ============================================================================
+%  9. APPLICATION INTERFACE
+% ============================================================================
+\section{Application Interface}\label{sec:app}
+
+The production application (\texttt{app.py}) is built with \textbf{Streamlit} and provides two tabs:
+
+\subsection{Tab 1: Batch Analytics}
+\begin{enumerate}[leftmargin=2em]
+    \item The user uploads a CSV file containing exam questions with required columns: \texttt{question\_text}, \texttt{average\_score}, \texttt{correct\_rate}, \texttt{score\_variance}.
+    \item The pipeline predicts difficulty labels and confidence scores for all questions.
+    \item Seven interactive visualisations are generated:
+    \begin{itemize}
+        \item Difficulty distribution (pie chart + bar chart)
+        \item Confidence score histogram
+        \item Feature averages by difficulty (grouped bar chart)
+        \item Average score vs.\ correct rate (scatter plot, coloured by difficulty)
+        \item Score variance distribution (box plot)
+        \item Topic-wise difficulty breakdown (stacked horizontal bar chart)
+        \item Confusion matrix (if ground truth column is present)
+    \end{itemize}
+    \item Results can be downloaded as a CSV file.
+\end{enumerate}
+
+\subsection{Tab 2: Single Question Prediction}
+\begin{enumerate}[leftmargin=2em]
+    \item The user enters question text and three numerical values (average score, correct rate, score variance).
+    \item The model returns a predicted difficulty label with a coloured badge.
+    \item A confidence progress bar and per-class probability bar chart are displayed.
+\end{enumerate}
+
+\subsection{Design}
+The interface follows a \textbf{dark-mode} design with custom CSS:
+\begin{itemize}[leftmargin=2em]
+    \item Background: \texttt{\#0e1117}
+    \item Card backgrounds: \texttt{\#1c1f26}
+    \item Easy badge: \texttt{\#1f8b4c} (green)
+    \item Medium badge: \texttt{\#d4a017} (amber)
+    \item Hard badge: \texttt{\#b02a37} (red)
+\end{itemize}
+
+% ============================================================================
+%  10. LIMITATIONS
+% ============================================================================
+\section{Limitations \& Known Issues}\label{sec:limitations}
+
+\begin{enumerate}[leftmargin=2em]
+    \item \textbf{Post-Exam Dependency:} The model relies on post-exam statistics (average score, correct rate, score variance), which are only available after students have taken the exam. This limits its use for pre-exam difficulty estimation.
+
+    \item \textbf{Text-Only Analysis:} The model cannot parse images, diagrams, or graphs. Questions reliant on visual context may be misclassified.
+
+    \item \textbf{Language Support:} The TF-IDF vectoriser is optimised for English-language questions. Non-English text will produce inaccurate features.
+
+    \item \textbf{Single Model:} Only Logistic Regression is implemented. Ensemble methods (XGBoost, Random Forest) may improve performance on more challenging datasets.
+
+    \item \textbf{Dataset Specificity:} The model is trained on 5{,}000 synthetic questions. Real-world questions with unusual formatting or domain-specific terminology may yield lower-confidence predictions.
+
+    \item \textbf{No Feature Importance Analysis:} Due to the TF-IDF vectorisation producing 3{,}000 sparse features, traditional feature importance interpretation is limited.
+\end{enumerate}
+
+% ============================================================================
+%  11. FUTURE WORK
+% ============================================================================
+\section{Future Work}\label{sec:future}
+
+\subsection{Short-Term Improvements}
+\begin{itemize}[leftmargin=2em]
+    \item Build a \textbf{pre-exam model} using only question text (BERT/sentence transformers) to predict difficulty before administering the exam.
+    \item Compare against \textbf{ensemble methods} (XGBoost, Random Forest, SVM) to benchmark performance.
+    \item Apply \textbf{SHAP values} for model interpretability and feature importance analysis.
+    \item Implement \textbf{hyperparameter tuning} via grid search or Bayesian optimisation.
+    \item Add \textbf{confidence thresholding} to flag low-confidence predictions for manual review.
+\end{itemize}
+
+\subsection{Long-Term --- Agentic AI Framework}
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{LLM Reasoning:} Use large language models (Gemini / GPT) to solve questions step-by-step and measure \emph{conceptual} complexity.
+    \item \textbf{RAG for Curriculum Alignment:} Retrieval-Augmented Generation to compare questions against educational standards.
+    \item \textbf{Multi-Modal Processing:} Vision-Language Models for diagram-dependent questions.
+    \item \textbf{Iterative Feedback Loops:} Agentic workflows simulating student failure modes to refine difficulty estimates.
+\end{itemize}
+
+% ============================================================================
+%  12. CONCLUSION
+% ============================================================================
+\section{Conclusion}\label{sec:conclusion}
+
+This project demonstrates that a straightforward combination of TF-IDF text vectorisation, numerical feature scaling, and Logistic Regression can achieve \textbf{98.9\% accuracy} in predicting exam question difficulty. The balanced dataset of 5{,}000 questions across Chemistry, Biology, Data Structures, Genetics, and other subjects enables consistent performance across all three difficulty tiers.
+
+The Streamlit application provides an accessible interface for educators to obtain instant difficulty assessments for both individual questions and entire question banks. The pipeline architecture (scikit-learn \texttt{Pipeline} with \texttt{ColumnTransformer}) ensures that preprocessing and inference are fully encapsulated, eliminating feature-engineering leakage and simplifying deployment.
+
+Key next steps include building a pre-exam text-only model, benchmarking against ensemble methods, and integrating SHAP-based interpretability to understand which textual and numerical features drive difficulty predictions.
+
+% ============================================================================
+%  APPENDIX
+% ============================================================================
+\appendix
+\section{Technology Stack}\label{app:tech}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{ll}
+    \toprule
+    \textbf{Component} & \textbf{Technology} \\
+    \midrule
+    Language        & Python 3.10+ \\
+    ML Framework    & scikit-learn $\geq$ 1.3 \\
+    Data Processing & Pandas $\geq$ 2.0, NumPy $\geq$ 1.24 \\
+    Visualisation   & Matplotlib $\geq$ 3.7, Seaborn $\geq$ 0.12 \\
+    Web Framework   & Streamlit $\geq$ 1.30 \\
+    Serialisation   & Joblib $\geq$ 1.3 \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\section{Feature Vector Specification}\label{app:features}
+
+The complete feature vector $\mathbf{x} \in \mathbb{R}^{3{,}003}$ used by the deployed model:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{c l l c}
+    \toprule
+    \textbf{\#} & \textbf{Feature} & \textbf{Extractor} & \textbf{Dimensionality} \\
+    \midrule
+    1--3{,}000 & TF-IDF word features & \texttt{TfidfVectorizer} & 3{,}000 (sparse) \\
+    3{,}001 & \texttt{average\_score}   & \texttt{StandardScaler} & 1 \\
+    3{,}002 & \texttt{correct\_rate}    & \texttt{StandardScaler} & 1 \\
+    3{,}003 & \texttt{score\_variance}  & \texttt{StandardScaler} & 1 \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\section{Reproduction Instructions}\label{app:reproduce}
+
+\begin{lstlisting}[language=bash, caption={Full Reproduction Steps}]
+# 1. Clone the repository
+git clone https://github.com/Siddharth-Dangi/AI-driven_educational_analytics_system.git
+cd AI-driven_educational_analytics_system
+
+# 2. Create and activate virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# 3. Install dependencies
+pip install streamlit scikit-learn pandas numpy matplotlib seaborn joblib
+
+# 4. Train the model (run all cells in notebook/train.ipynb)
+# Or run the training script if available
+
+# 5. Launch the application
+streamlit run app.py
+# Opens at http://localhost:8501
+
+# 6. Explore model performance
+# Open notebook/visualizations.ipynb and run all cells
+\end{lstlisting}
+
+\end{document}
