@@ -8,7 +8,7 @@
 
 [Overview](#-overview) · [Architecture](#-system-architecture) · [Quickstart](#-quickstart) · [Model](#-model) · [Results](#-results) · [Application](#-application) · [Visualizations](#-visualizations) · [Limitations](#-limitations) · [Future Work](#-future-work)
 
-**🚀 Live Demo:** [Insert Streamlit Link Here] | **📹 Project Video:** [Insert YouTube Link Here]
+**🚀 Live Demo:** [Insert Streamlit Link Here...] | **📹 Project Video:** [Insert YouTube Link Here]
 
 ---
 
