@@ -5,3 +5,12 @@ matplotlib
 seaborn
 joblib
 numpy
+langgraph
+langchain
+langchain-core
+langchain-community
+langchain-google-genai
+faiss-cpu
+sentence-transformers
+python-dotenv
+pydantic

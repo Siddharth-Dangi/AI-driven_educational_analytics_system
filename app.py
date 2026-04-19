@@ -6,6 +6,9 @@ import seaborn as sns
 from sklearn.metrics import confusion_matrix
 import numpy as np
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 st.set_page_config(page_title="Exam Question Analytics", layout="wide")
 
@@ -56,7 +59,7 @@ model = joblib.load(os.path.join(BASE_DIR, "model.pkl"))
 st.title("Exam Question Analytics")
 st.markdown("Advanced ML based Difficulty Prediction & Assessment Intelligence")
 
-tabs = st.tabs(["Batch Analytics", "Single Prediction"])
+tabs = st.tabs(["Batch Analytics", "Single Prediction", "🤖 AI Agent Assistant"])
 
 # =====================================================
 # TAB 1 — BATCH ANALYTICS
@@ -311,3 +314,67 @@ with tabs[1]:
             ax_p.set_facecolor("#1c1f26")
             fig_p.patch.set_facecolor("#0e1117")
             st.pyplot(fig_p)
+
+# =====================================================
+# TAB 3 — AI AGENT ASSISTANT
+# =====================================================
+with tabs[2]:
+    st.subheader("🤖 Agentic Assessment Design Assistant")
+    st.markdown("Leverage a LangGraph + RAG workflow to evaluate your assessment questions based on pedagogical best practices.")
+    
+    # UI Inputs
+    query_input = st.text_input("What do you need help with?", value="Please evaluate these questions for difficulty and fairness.")
+    context_input = st.text_area("Assessment Context / Drafted Questions", height=150, 
+                                 value="1. What is the definition of photosynthesis?\n2. Which of the following is NOT a property of water?")
+    
+    if st.button("Evaluate Assessment", type="primary", use_container_width=True):
+        if not os.getenv("GEMINI_API_KEY"):
+            st.error("⚠️ GEMINI_API_KEY is not set. Please add it to your environment or a local .env file in the repository root.")
+        else:
+            with st.spinner("Initializing Agentic Workflow..."):
+                from agent.workflow import app_workflow
+                
+                # Setup Initial State
+                initial_state = {
+                    "query": query_input,
+                    "assessment_context": context_input,
+                    "retrieved_pedagogy": "",
+                    "numeric_model_difficulty": "",
+                    "errors": ""
+                }
+                
+                # Execute LangGraph
+                try:
+                    results = app_workflow.invoke(initial_state)
+                    
+                    if results.get("errors"):
+                        st.error(f"Agent Error: {results['errors']}")
+                    else:
+                        report = results.get("final_report")
+                        if report is not None:
+                            st.success("Analysis Complete!")
+                            
+                            # Render Structured Output Beautifully
+                            st.markdown("### 📊 Assessment Summary")
+                            st.info(report.summary)
+                            
+                            col1, col2 = st.columns(2)
+                            with col1:
+                                st.markdown("### 🛑 Identified Gaps")
+                                for gap in report.gaps:
+                                    st.markdown(f"- {gap}")
+                            with col2:
+                                st.markdown("### 💡 Recommended Output")
+                                for ad in report.advice:
+                                    st.markdown(f"- {ad}")
+                                    
+                            st.markdown("### 📚 Pedagogical References")
+                            for ref in report.refs:
+                                st.caption(f"📖 {ref}")
+                                
+                            st.divider()
+                            st.warning(report.disclaimer)
+                        else:
+                            st.error("Failed to generate a valid structured report.")
+                except Exception as e:
+                    st.error(f"Graph Execution Error: {str(e)}")

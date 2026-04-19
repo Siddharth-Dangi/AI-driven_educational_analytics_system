@@ -1,6 +1,10 @@
-#!/Users/siddharth/Documents/GENAI/venv/bin/python3.12
+#!/bin/sh
+'''exec' "/Users/varunudata/iCloud Drive (Archive) - 1/Documents/computer science and AI/Projects/GEN_AI_Capstone/AI-driven_educational_analytics_system/venv/bin/python3" "$0" "$@"
+' '''
+# -*- coding: utf-8 -*-
+import re
 import sys
 from fontTools.__main__ import main
 if __name__ == '__main__':
-    sys.argv[0] = sys.argv[0].removesuffix('.exe')
+    sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
     sys.exit(main())

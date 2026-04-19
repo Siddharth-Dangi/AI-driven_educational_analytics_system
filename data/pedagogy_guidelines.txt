@@ -1,0 +1,34 @@
+# Assessment Design Best Practices & Pedagogy Guidelines
+
+## 1. Bloom's Taxonomy Guidelines
+When creating assessment questions, it is crucial to target multiple cognitive levels to ensure a comprehensive evaluation of student knowledge.
+- **Remembering:** Recall facts and basic concepts. (Keywords: define, duplicate, list, memorize, repeat, state)
+- **Understanding:** Explain ideas or concepts. (Keywords: classify, describe, discuss, explain, identify, locate, recognize)
+- **Applying:** Use information in new situations. (Keywords: execute, implement, solve, use, demonstrate, interpret)
+- **Analyzing:** Draw connections among ideas. (Keywords: differentiate, organize, relate, compare, contrast, distinguish)
+- **Evaluating:** Justify a stand or decision. (Keywords: appraise, argue, defend, judge, select, support, value)
+- **Creating:** Produce new or original work. (Keywords: design, assemble, construct, conjecture, develop, formulate)
+
+## 2. Best Practices for Multiple Choice Questions (MCQs)
+- **Clear Stem:** The stem should present a single, well-defined problem. Avoid negative phrasing (e.g., "Which of the following is NOT..."). If a negative must be used, capitalize and bold it.
+- **Plausible Distractors:** All incorrect options (distractors) must be plausible and relate to the topic. If an option is obviously wrong, it reduces the question's difficulty inappropriately.
+- **Consistent Length:** The correct answer and the distractors should be roughly the same length. Avoid making the correct answer the longest one.
+- **Avoid Overlapping Options:** Options should be mutually exclusive. (e.g., avoid "A and B", "All of the above", "None of the above" if possible, as they test logic rather than knowledge).
+- **No Clues:** Ensure the grammatical structure of the stem does not give away the correct answer (e.g., ending the stem with "an" implies the correct answer starts with a vowel).
+
+## 3. Constructive Feedback and Improvement Strategies
+If a question is predicted to be **HARD** (low correct rate, low average score), consider:
+- Are there prerequisite concepts missing?
+- Is the wording convoluted or misleading?
+- Are the distractors testing reading comprehension or tricky vocabulary rather than the core concept?
+**Recommendation:** Break the question down, simplify the language, or explicitly define complex terms if they aren't the primary learning objective.
+
+If a question is predicted to be **EASY** (high correct rate, high average score), consider:
+- Are the distractors too obvious?
+- Is it merely testing "Remembering" on Bloom's Taxonomy instead of higher-order thinking?
+**Recommendation:** Change the stem to require application (e.g., moving from "What is the definition of X?" to "In which scenario would X be the most appropriate solution?").
+
+## 4. Inclusivity and Fairness
+- Use culturally neutral names and scenarios.
+- Avoid idioms, slang, and cultural references that non-native speakers or diverse groups might not understand.
+- Ensure scenarios are accessible and don't rely on socio-economic assumptions (e.g., owning luxury items, specific vacation destinations).

@@ -8,7 +8,7 @@
 
 [Overview](#-overview) · [Architecture](#-system-architecture) · [Quickstart](#-quickstart) · [Model](#-model) · [Results](#-results) · [Application](#-application) · [Visualizations](#-visualizations) · [Limitations](#-limitations) · [Future Work](#-future-work)
 
-**🚀 Live Demo:** [https://ai-driveneducationalanalyticssystem-rq4vchxyhfzxyt9df9inqs.streamlit.app/] | **📹 Project Video:** [Insert YouTube Link Here]
+**🚀 Live Demo:** [https://ai-driveneducationalanalyticssystem-rq4vchxyhfzxyt9df9inqs.streamlit.app/] | **📹 Project Video:** ["https://drive.google.com/file/d/1G32nGhl4JBpQ05cexZpVvaRrWRh4w-qk/view?usp=drive_link]
 
 ---
 
@@ -284,7 +284,3 @@ The dataset (`data/5000_dataset_genai.csv`) contains **5,000 exam questions** wi
 | Joblib | Model serialization |
 
 ---
-
-<p align="center">
-  <b>Built with ❤️ for smarter educational assessments</b>
-</p>
