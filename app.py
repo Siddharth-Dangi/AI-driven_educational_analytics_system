@@ -13,42 +13,127 @@ load_dotenv()
 st.set_page_config(page_title="Exam Question Analytics", layout="wide")
 
 # --- Color palette ---
-COLORS = {"Easy": "#1f8b4c", "Medium": "#d4a017", "Hard": "#b02a37"}
+COLORS = {"Easy": "#2ecc71", "Medium": "#f39c12", "Hard": "#e74c3c"} # Softer bright colors for modern UI
 PALETTE = list(COLORS.values())
 
 st.markdown("""
 <style>
-.main {
-    background-color: #0e1117;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+html, body, [class*="css"] {
+    font-family: 'Inter', sans-serif;
 }
-h1, h2, h3 {
-    color: white;
+
+/* Base App Background Gradient */
+.stApp {
+    background: radial-gradient(circle at top right, #0f172a, #020617);
+    color: #e2e8f0;
 }
-.metric-box {
-    background-color: #1c1f26;
+
+/* Typography styles */
+h1, h2, h3, h4, h5, h6 {
+    color: #f8fafc !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.02em;
+}
+
+/* Glassmorphism applied to Metrics & Charts */
+div[data-testid="stMetric"], .stMetric {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 16px;
     padding: 20px;
-    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+div[data-testid="stMetric"]:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Tabs Styling */
+div[data-testid="stTabs"] button {
+    border-radius: 8px 8px 0 0;
+    transition: all 0.3s ease;
+}
+div[data-testid="stTabs"] button[aria-selected="true"] {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #38bdf8 !important;
+    border-bottom: 2px solid #38bdf8 !important;
+}
+
+/* Buttons */
+.stButton > button {
+    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 14px rgba(14, 165, 233, 0.3);
+}
+.stButton > button:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(14, 165, 233, 0.5);
+    background: linear-gradient(135deg, #0ea5e9, #0284c7);
+}
+
+/* File Uploader Glass Theme */
+div[data-testid="stFileUploader"] {
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    transition: background 0.3s ease;
+}
+div[data-testid="stFileUploader"]:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+/* Badges */
 .badge-easy {
-    background-color: #1f8b4c;
-    padding: 8px 16px;
-    border-radius: 20px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    padding: 8px 20px;
+    border-radius: 30px;
     color: white;
     font-weight: bold;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.85em;
+    display: inline-block;
 }
 .badge-medium {
-    background-color: #d4a017;
-    padding: 8px 16px;
-    border-radius: 20px;
+    background: linear-gradient(135deg, #fbbf24, #d97706);
+    padding: 8px 20px;
+    border-radius: 30px;
     color: white;
     font-weight: bold;
+    box-shadow: 0 4px 10px rgba(251, 191, 36, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.85em;
+    display: inline-block;
 }
 .badge-hard {
-    background-color: #b02a37;
-    padding: 8px 16px;
-    border-radius: 20px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    padding: 8px 20px;
+    border-radius: 30px;
     color: white;
     font-weight: bold;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.85em;
+    display: inline-block;
+}
+
+/* Dataframe Borders */
+[data-testid="stDataFrame"] {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
 }
 </style>
 """, unsafe_allow_html=True)
@@ -110,7 +195,7 @@ with tabs[0]:
                         colors=color_list, startangle=140,
                         textprops={"fontsize": 12, "color": "white"})
                 ax1.set_title("Difficulty Split", color="white", fontsize=14)
-                fig1.patch.set_facecolor("#0e1117")
+                fig1.patch.set_facecolor("none")
                 st.pyplot(fig1)
 
             with chart_col2:
@@ -123,8 +208,8 @@ with tabs[0]:
                 ax2.set_ylabel("Count", color="white")
                 ax2.set_title("Question Count by Difficulty", color="white", fontsize=14)
                 ax2.tick_params(colors="white")
-                ax2.set_facecolor("#1c1f26")
-                fig2.patch.set_facecolor("#0e1117")
+                ax2.set_facecolor("none")
+                fig2.patch.set_facecolor("none")
                 st.pyplot(fig2)
 
             # ---------- 2. Confidence Distribution Histogram ----------
@@ -141,8 +226,8 @@ with tabs[0]:
             ax3.set_title("Confidence Distribution by Predicted Difficulty", color="white", fontsize=14)
             ax3.legend()
             ax3.tick_params(colors="white")
-            ax3.set_facecolor("#1c1f26")
-            fig3.patch.set_facecolor("#0e1117")
+            ax3.set_facecolor("none")
+            fig3.patch.set_facecolor("none")
             st.pyplot(fig3)
 
             # ---------- 3. Feature Averages by Difficulty (Grouped Bar) ----------
@@ -170,8 +255,8 @@ with tabs[0]:
             ax4.set_title("Avg Score · Correct Rate · Variance  per Difficulty", color="white", fontsize=14)
             ax4.legend()
             ax4.tick_params(colors="white")
-            ax4.set_facecolor("#1c1f26")
-            fig4.patch.set_facecolor("#0e1117")
+            ax4.set_facecolor("none")
+            fig4.patch.set_facecolor("none")
             st.pyplot(fig4)
 
             # ---------- 4. Scatter Plot — Score vs Correct Rate ----------
@@ -189,8 +274,8 @@ with tabs[0]:
             ax5.set_title("Average Score vs Correct Rate", color="white", fontsize=14)
             ax5.legend()
             ax5.tick_params(colors="white")
-            ax5.set_facecolor("#1c1f26")
-            fig5.patch.set_facecolor("#0e1117")
+            ax5.set_facecolor("none")
+            fig5.patch.set_facecolor("none")
             st.pyplot(fig5)
 
             # ---------- 5. Box Plot — Score Variance by Difficulty ----------
@@ -207,8 +292,8 @@ with tabs[0]:
             ax6.set_ylabel("Score Variance", color="white")
             ax6.set_title("Score Variance Spread per Difficulty", color="white", fontsize=14)
             ax6.tick_params(colors="white")
-            ax6.set_facecolor("#1c1f26")
-            fig6.patch.set_facecolor("#0e1117")
+            ax6.set_facecolor("none")
+            fig6.patch.set_facecolor("none")
             st.pyplot(fig6)
 
             # ---------- 6. Topic-wise Difficulty Breakdown ----------
@@ -227,8 +312,8 @@ with tabs[0]:
                 ax7.set_title("Stacked Difficulty by Topic", color="white", fontsize=14)
                 ax7.legend(title="Difficulty")
                 ax7.tick_params(colors="white")
-                ax7.set_facecolor("#1c1f26")
-                fig7.patch.set_facecolor("#0e1117")
+                ax7.set_facecolor("none")
+                fig7.patch.set_facecolor("none")
                 st.pyplot(fig7)
 
             # ---------- Confusion Matrix (if ground truth exists) ----------
@@ -239,12 +324,12 @@ with tabs[0]:
                 fig_cm, ax_cm = plt.subplots(figsize=(6, 5))
                 sns.heatmap(cm, annot=True, fmt="d", xticklabels=model.classes_,
                             yticklabels=model.classes_, cmap="Blues", ax=ax_cm,
-                            linewidths=0.5, linecolor="#0e1117")
+                            linewidths=0.5, linecolor="#0f172a")
                 ax_cm.set_xlabel("Predicted", color="white")
                 ax_cm.set_ylabel("Actual", color="white")
                 ax_cm.set_title("Confusion Matrix", color="white", fontsize=14)
                 ax_cm.tick_params(colors="white")
-                fig_cm.patch.set_facecolor("#0e1117")
+                fig_cm.patch.set_facecolor("none")
                 st.pyplot(fig_cm)
 
             # ---------- Download ----------
@@ -311,8 +396,8 @@ with tabs[1]:
             ax_p.set_xlabel("Probability %", color="white")
             ax_p.set_title("Prediction Probability per Class", color="white", fontsize=13)
             ax_p.tick_params(colors="white")
-            ax_p.set_facecolor("#1c1f26")
-            fig_p.patch.set_facecolor("#0e1117")
+            ax_p.set_facecolor("none")
+            fig_p.patch.set_facecolor("none")
             st.pyplot(fig_p)
 
 # =====================================================
