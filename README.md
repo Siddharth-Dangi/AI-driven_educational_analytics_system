@@ -1,4 +1,4 @@
-# AI-Driven Educational Analytics System
+#                                  AI-Driven Educational Analytics System
 
 ### Intelligent Exam Question Difficulty Prediction & Agentic Qualitative Assessment
 
@@ -10,11 +10,11 @@
 
 [Overview](#-overview) · [Architecture](#-system-architecture) · [Quickstart](#-quickstart) · [Agentic AI & RAG](#-agentic-ai--rag) · [Model](#-model) · [Results](#-results) · [Application](#-application) · [Visualizations](#-visualizations) · [Limitations](#-limitations) · [Future Work](#-future-work)
 
-**🚀 Live Demo:** [https://ai-driveneducationalanalyticssystem-rq4vchxyhfzxyt9df9inqs.streamlit.app/] | **📹 Project Video:** ["https://drive.google.com/file/d/1G32nGhl4JBpQ05cexZpVvaRrWRh4w-qk/view?usp=drive_link]
+** Live Demo:** [https://ai-driveneducationalanalyticssystem-rq4vchxyhfzxyt9df9inqs.streamlit.app/] | **📹 Project Video:** ["https://drive.google.com/file/d/1G32nGhl4JBpQ05cexZpVvaRrWRh4w-qk/view?usp=drive_link]
 
 ---
 
-## 🎯 Overview
+##  Overview
 
 Educators and testing organizations spend significant effort manually evaluating the difficulty of examination questions. Misjudged difficulty levels can skew assessment outcomes and inaccurately measure student proficiency.
 
@@ -36,7 +36,7 @@ The **AI-Driven Educational Analytics System** is an end-to-end Machine Learning
 
 ---
 
-## 🏗 System Architecture
+##  System Architecture
 
 The system operates across a dual-pipeline architecture:
 
@@ -71,7 +71,7 @@ The system operates across a dual-pipeline architecture:
 
 ---
 
-## 📂 Repository Structure
+##  Repository Structure
 
 ```text
 AI-driven_educational_analytics_system/
@@ -99,7 +99,7 @@ AI-driven_educational_analytics_system/
 
 ---
 
-## 🚀 Quickstart
+##  Quickstart
 
 ### 1. Clone & enter the repo
 
@@ -134,7 +134,7 @@ streamlit run app.py
 
 ---
 
-## 🤖 Agentic AI & RAG
+##  Agentic AI & RAG
 
 To provide qualitative insights beyond just a numeric difficulty prediction, we introduced an Agentic Workflow using **LangGraph** and **Google Gemini**.
 
@@ -151,7 +151,7 @@ The agent manages state transitions iteratively.
 
 ---
 
-## 🧠 Model
+##  Model
 
 ### Pipeline Overview
 A single **scikit-learn Pipeline** combining text and numerical features:
@@ -164,7 +164,7 @@ A single **scikit-learn Pipeline** combining text and numerical features:
 
 ---
 
-## 📊 Results
+##  Results
 
 | Metric | Score |
 |--------|-------|
@@ -181,7 +181,7 @@ A single **scikit-learn Pipeline** combining text and numerical features:
 
 ---
 
-## 🕹️ Application
+##  Application
 
 The Streamlit app (`app.py`) provides **three tabs**:
 
@@ -196,7 +196,7 @@ Analyze individual questions deeply. It takes the text and the predicted difficu
 
 ---
 
-## 🚦 Limitations
+##  Limitations
 
 - **Language:** Optimized for English-language questions only.
 - **Post-Exam Features:** The ML model requires post-exam statistics (average score, correct rate).
@@ -204,7 +204,7 @@ Analyze individual questions deeply. It takes the text and the predicted difficu
 
 ---
 
-## 🚀 Future Work
+##  Future Work
 
 - **Pre-Exam Predictor** — Build a text-only model using advanced NLP (BERT, sentence transformers) for difficulty prediction before administering the exam.
 - **Multi-Agent Orchestration** — Separate the LangGraph logic into specialized sub-agents (e.g., a "Fairness Reviewer Agent" and a "Cognitive Complexity Agent").
@@ -213,7 +213,7 @@ Analyze individual questions deeply. It takes the text and the predicted difficu
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 | Technology | Purpose |
 |------------|---------|
